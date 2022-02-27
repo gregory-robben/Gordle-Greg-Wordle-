@@ -228,37 +228,20 @@ def guess_result_to_color_string(result_list):#from 3b1b
 def all_results_to_color_string(results):
   return "\n".join(map(guess_result_to_color_string, results))
 
-##############################################
 
-
-  ##############################################
-   # Print outcome #from 3b1b
-  
-  #if not quiet:
-  #    message = "\n".join([
-  #        "",
-  #        f"Answer: {answer}",
-  #        f"Guesses: {guess}",
-  #        *patterns_to_string((*patterns, 3**5 - 1)).split("\n"),
-  #        *" " * (6 - len(patterns)),
-  #        f"Total guesses: {total_guesses}",
-  #        *" " * 2,
-  #    ])
-  #    if answer is not test_set[0]:
-  #        # Move cursor back up to the top of the message
-  #        n = len(message.split("\n")) + 1
-  #        print(("\033[F\033[K") * n)
-  #    else:
-  #        print("\r\033[K\n")
-  #    print(message)
-
-  ############################################
 def print_result(guess,targetWord,round):
   #print("\033[K")
   print(f'Round {round+1}: ',end='')
   print(guess_result_to_color_string(answer_check(guess,targetWord)),end='')
   print(guess) 
 
+def keyboard(all_guesses):
+  used_letters = set("".join(all_guesses))
+  for letter in range(97, 123):
+    if chr(letter) not in used_letters:
+      print(chr(letter), end=" ")
+    else:
+      print('⬛', end=" ")
 
 if __name__ == "__main__":
   print("Gordle - Greg wordle")
@@ -270,34 +253,30 @@ if __name__ == "__main__":
     #print("Gordle - Greg wordle")
     #printGameBoard(gameBoard(chosenDifficulty),None,None)
   round = 0
-  all_guesses=[]
-  results = []
+  all_guesses=[] #list object to store all of the users guesses, we print this next to the colored results when reprinting the game board
+  results = [] #list object to store the results of the rounds, this helps up when reprinting the game board each time.
   solved = False
   targetWord = set_target(chosenDifficulty)
   #targetWord = 'aahed'
   while round < chosenDifficulty + 1:
+    keyboard(all_guesses)
     guess = user_guess(chosenDifficulty)
     #guess = 'media'
     #past_guesses.append(guess)
+    #TODO: store all guesses
     results.append(answer_check(guess,targetWord))
     all_guesses.append(guess)
 
-    if min(results[-1]) ==2: #correct_word(guess,targetWord):
-      
-      
-      #print_result2(round,results)
+    if min(results[-1]) ==2: #if all results are 2 then that means all have exact matches
       print_result(guess,targetWord,round)
       #TODO: print the result as a full board with the rounds printed over top
-      #printGameBoard(letter_by_letter(guess,targetWord),round)
-      
       print('Well done!')
       solved = True
       break
     else:
-      #print_result2(round,results)
       print_result(guess,targetWord,round)
-      #printGameBoard(letter_by_letter(guess,targetWord),round)
     round += 1
+
   if not solved:
     print("Answer:",targetWord)
 
