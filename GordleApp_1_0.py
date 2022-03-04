@@ -94,7 +94,7 @@ def Set_target_dictionary(targetWord):
     
     return target_dictionary
 
-#ask the user to guess a 5 letter word
+
 def user_guess(difficulty = 5):
     '''
     Prompts the user for their guess and ensures that it meets the difficulty criteria
@@ -131,7 +131,6 @@ def set_guess_dictionary(guess):
       i += 1
     return guess_dictionary
 
-
 def correct_word(guess,targetWord):
     '''
     Is the guess the target word?
@@ -141,11 +140,6 @@ def correct_word(guess,targetWord):
         return True
     else:
         return False
-
-
-#define letter-lookup function
-#then going letter by letter, if letter is in target_dictionary then if the position matches return GreenSquare, else return YellowSquare. If not return EmptySquare
-
 
 def word_to_array(word):
   list = []
@@ -223,12 +217,16 @@ def guess_result_to_color_string(result_list):
   Adapted from code from 3b1b
   '''
   d = {0: "⬛", 1: "🟨", 2: "🟩"}
-  #return d[result_list]
+  
   return "".join(d[x] for x in result_list)
 
-##############################################
-#3b1b's
+
 def all_results_to_color_string(results):
+  '''
+  Parameter: list of number representing the guess accuracy
+  Returns a string of colored squares
+  Adapted from 3b1b
+  '''
   return "\n".join(map(guess_result_to_color_string, results))
 
 
