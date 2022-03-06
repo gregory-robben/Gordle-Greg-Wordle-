@@ -103,6 +103,8 @@ def user_guess(difficulty = 5):
     '''
     while True:
         guess = input("Guess a " + str(difficulty) + " letter word: ").lower()
+        if guess == 'end':
+          exit()
         if len(guess) != difficulty:
             print('Invalid length',end="\r")
             time.sleep(1)
@@ -218,7 +220,7 @@ def guess_result_to_color_string(result_list):
   '''
   d = {0: "⬛", 1: "🟨", 2: "🟩"}
   
-  return "".join(d[x] for x in result_list)
+  return "".join(d[x] for x in result_list)+'         '
 
 
 def all_results_to_color_string(results):
@@ -227,18 +229,25 @@ def all_results_to_color_string(results):
   Returns a string of colored squares
   Adapted from 3b1b
   '''
-  return "\n".join(map(guess_result_to_color_string, results))
+  return "\n         ".join(map(guess_result_to_color_string, results))
 
 
 def print_result(guess,targetWord,round):
-  #print("\033[K")
-  print(f'Round {round+1}: ',end='')
-  print(guess_result_to_color_string(answer_check(guess,targetWord)))
+#  print("\r\033[1A\033[K")
+#  print("\r\033[1A\033[K")
+#  print(f'Round {round+1}: ',end='')
+#  print(guess_result_to_color_string(answer_check(guess,targetWord)))
   string = ''
   for letter in guess:
     string += letter + ' '
 
-  print(f"         {string}") 
+#  print(f"         {string}") 
+
+#  print(all_guesses)
+#  print(all_results_to_color_string(results))
+  n_results = len(results)
+  statement = f"         {all_results_to_color_string(results[:-1])}\nRound {round+1}: {guess_result_to_color_string(answer_check(guess,targetWord))}\n         {string}\nYour guesses: {all_guesses}\n"
+  print(statement,end="\r")
 
 def keyboard(guesses,results,answer):
   used_letters = set("".join(all_guesses))
@@ -264,7 +273,7 @@ def keyboard(guesses,results,answer):
       first_row = '  '.join((first_row,chr(letter)))
     else:
       first_row = ' '.join((first_row,'⬛'))
-  print(first_row)
+#  print(first_row)
   #second row to indicate matches and missmatches
   for letter in range(97, 123):
     if chr(letter) in matched_letters_set:
@@ -273,7 +282,7 @@ def keyboard(guesses,results,answer):
       second_row = ' '.join((second_row,'🟨'))
     else:
       second_row = ' '.join((second_row,'⬛'))
-  print(second_row)
+  print(f'\n{first_row}\n{second_row}')
 
 def todays_wordle(chosenDifficulty = 5):
   while True:
@@ -281,6 +290,7 @@ def todays_wordle(chosenDifficulty = 5):
     if play_today == "End":
       exit()
     elif play_today == 'Yes':
+      print("\033[0A\033[KPlaying today's World")
       start_date = date(2022,3,1)
       todays_wordle = 255
 
@@ -290,12 +300,13 @@ def todays_wordle(chosenDifficulty = 5):
         todays_wordle += diff.days
       return GordleDictionary.dictionary[0][todays_wordle]
     elif play_today == 'No':
+      print("\033[0A\033[KPlaying random World")
       return set_target(chosenDifficulty)
 
 
 if __name__ == "__main__":
   print("Gordle - Greg wordle")
-  UserID = userID()
+  #UserID = userID()
   chosenDifficulty = 5 #gameDifficulty()
   round = 0
   all_guesses=[] #list object to store all of the users guesses, we print this next to the colored results when reprinting the game board
@@ -306,7 +317,11 @@ if __name__ == "__main__":
   while round < chosenDifficulty + 1:
     keyboard(all_guesses,results,targetWord)
     guess = user_guess(chosenDifficulty)
-    #TODO: store all guesses
+    print("\r\033[1A\033[K\r\033[1A\033[K\r\033[1A\033[K\r\033[1A\033[K")
+    
+    #print("\033[2A",end="\r")
+    #print("\r\033[4A")#\033[K")
+    
     results.append(answer_check(guess,targetWord))
     all_guesses.append(guess)
 
@@ -322,7 +337,7 @@ if __name__ == "__main__":
       elif round == 3:
         print('Great!')
       elif round == 4:
-        print('You got it!!')
+        print('You got it!')
       elif round == 5:
         print('Phew!')
       
