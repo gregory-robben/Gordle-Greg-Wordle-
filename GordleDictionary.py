@@ -3,13 +3,9 @@ Created on Sun February 2nd 2022
 
 @author: gregoryrobben
 
-Purpose: Build a dictionary to use for Gordle. The dictionary includes the word, and used date.
-
+Purpose: Provide Wordle word list
 """
-#import psycopg2
-#from psycopg2 import Error
-#from psycopg2 import extras
-#from psycopg2.extras import execute_values
+
 
 #Origional Dictionary as list
 
@@ -12962,95 +12958,3 @@ Oa = ['aahed',
     'zymes',
     'zymic'
   ]
-
-def allowed_word_list():
-  '''
-  Reads from the allowed_word list
-  returns a list of allowed words
-  '''
-  allowed_words = []
-  with open('allowed_words.txt') as f:
-      for line in f:
-          allowed_words.append(line.rstrip("\n"))
-  return allowed_words
-
-def word_in_list(word,list):
-  '''
-  Parameter 1: the item you're looking for
-  Parameter 2: the list you are looking in
-  Returns T/F
-  '''
-  if word in list:
-    #print("exists!")
-    return True
-  else:
-      #print("not Exists!")
-      return False
-
-
-def build_dictionary(myList = [], *args):
-  import datetime
-  game_dictionary = {}
-  number = 0
-  date = datetime.datetime(2021,6,19)
-  for word in myList:
-    #print(word)
-    game_dictionary[word[number]] = date
-    date += 1
-    number += 1
-  return game_dictionary
-
-
-'''
-skips={}
-currentDictionary = {}
-def InputWordListSQL(connection,skips):
-    mycursor = connection.cursor()
-    try:
-               
-        for item in Oa:
-            if item in currentDictionary:
-                continue
-            statement = """INSERT INTO game_dictionary.originalwordlist(word) VALUES (%s)"""
-            value = item
-            #execute_values(mycursor,statement,value)
-            mycursor.execute (statement,item)
-            connection.commit()
-
-    #except (Exception, Error) as 
-
-    except (Exception, Error) as error:
-        print("Error while connecting to PostgreSQL", error)
-    finally:
-        if (connection):
-            mycursor.close()
-            connection.close()
-            print("PostgreSQL connection is closed")
-
-def CheckCurrentDictionarySQL(connection):
-    mycursor = connection.cursor()
-    try:
-            statement = "SELECT word from game_dictionary.originalwordlist"
-            mycursor.execute(statement)
-            result = mycursor.fetchall()
-            for i in result:
-                currentDictionary.add(i)
-
-    except (Exception, Error) as error:
-        print("Error while connecting to PostgreSQL", error)
-
-    finally:
-        if (connection):
-            mycursor.close()
-            connection.close()
-            print("PostgreSQL connection is closed")
-
-if __name__ == "__main__":
-    connection = psycopg2.connect( host="localhost", user="postgres", password="239459", dbname="Grordle")
-
-    CheckCurrentDictionarySQL(connection)
-    print("Current Dictionary: ",currentDictionary)
-    connection = psycopg2.connect( host="localhost", user="postgres", password="239459", dbname="Grordle")
-    InputWordListSQL(connection,skips)
-    connection.close()
-'''
