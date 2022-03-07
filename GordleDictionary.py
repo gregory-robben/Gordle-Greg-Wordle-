@@ -12963,10 +12963,13 @@ def allowed_word_list():
   returns a list of allowed words
   '''
   allowed_words = []
-  with open('allowed_words.txt') as f:
+  try: 
+    with open('allowed_words.txt') as f:
       for line in f:
           allowed_words.append(line.rstrip("\n"))
-  return allowed_words
+    return allowed_words
+  except:
+    return dictionary
 
 def word_in_list(word,list):
   '''
