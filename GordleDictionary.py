@@ -3,12 +3,10 @@ Created on Sun February 2nd 2022
 
 @author: gregoryrobben
 
-Purpose: Provide Wordle word list
+Purpose: Build a dictionary to use for Gordle.
+
 """
-
-
 #Origional Dictionary as list
-
 dictionary=['cigar',
     'rebut',
     'sissy',
@@ -12958,3 +12956,40 @@ Oa = ['aahed',
     'zymes',
     'zymic'
   ]
+
+def allowed_word_list():
+  '''
+  Reads from the allowed_word list
+  returns a list of allowed words
+  '''
+  allowed_words = []
+  with open('allowed_words.txt') as f:
+      for line in f:
+          allowed_words.append(line.rstrip("\n"))
+  return allowed_words
+
+def word_in_list(word,list):
+  '''
+  Parameter 1: the item you're looking for
+  Parameter 2: the list you are looking in
+  Returns T/F
+  '''
+  if word in list:
+    #print("exists!")
+    return True
+  else:
+      #print("not Exists!")
+      return False
+
+
+def build_dictionary(myList = [], *args):
+  import datetime
+  game_dictionary = {}
+  number = 0
+  date = datetime.datetime(2021,6,19)
+  for word in myList:
+    #print(word)
+    game_dictionary[word[number]] = date
+    date += 1
+    number += 1
+  return game_dictionary
