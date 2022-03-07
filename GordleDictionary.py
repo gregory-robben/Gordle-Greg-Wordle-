@@ -12969,7 +12969,9 @@ def allowed_word_list():
           allowed_words.append(line.rstrip("\n"))
     return allowed_words
   except:
-    return dictionary
+    for word in dictionary:
+      allowed_words.append(word)
+    return allowed_words
 
 def word_in_list(word,list):
   '''
