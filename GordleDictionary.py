@@ -2316,7 +2316,7 @@ dictionary=['cigar',
     'artsy',
     'rural',
     'shave'
-  ],
+  ]
 Oa = ['aahed',
     'aalii',
     'aargh',

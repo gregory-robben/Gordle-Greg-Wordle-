@@ -279,7 +279,8 @@ def todays_wordle(chosenDifficulty = 5):
         diff = date.today() - start_date
         todays_wordle += diff.days
       play_today = "Wordle"
-      return GordleDictionary.dictionary[0][todays_wordle],play_today
+      #return GordleDictionary.dictionary[0][todays_wordle],play_today
+      return GordleDictionary.dictionary[todays_wordle],play_today
     elif play_today == 'No':
       print("\033[0A\033[KPlaying random Wordle")
       play_today = "Random"
