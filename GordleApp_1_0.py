@@ -40,16 +40,16 @@ def gameDifficulty():
     #TODO: rework this where the difficulty and the length is a dictionary so that its simpler
     if choice == 'Beginner':
       valid = True
-      return 5
+      return 5,choice
       
     elif choice == 'Intermediate':
       valid = True
-      return 9
+      return 9,choice
       
     elif choice == 'Expert':
       valid = True
      
-      return 13
+      return 13,choice
       
     if choice == 'End':
       valid = True
@@ -206,14 +206,14 @@ def all_results_to_color_string(results):
   return "\n".join(map(guess_result_to_color_string, results))
 
 
-def print_result(guess,answer,round,guesses,results,gameMode):
+def print_result(guess,answer,round,guesses,results,gameMode,difficulty):
   seperated_guess_string = '' #we seperate each letter so that they align with the result sqaures
   for letter in guess:
     seperated_guess_string += letter + ' '
   
   statement = "\n".join([
     "Gordle - Greg Wordle",
-    f"Game mode: {gameMode}",
+    f"Game mode: {gameMode} | Difficulty: {difficulty}",
     "",
     *all_results_to_color_string(results[:]).split("\n"),
     *" " * (6 - len(results)),
@@ -264,7 +264,7 @@ def keyboard(guesses,results,answer):
       second_row = ' '.join((second_row,'⬛'))
   print(f'\n{first_row}\n{second_row}')
 
-def todays_wordle(chosenDifficulty = 5):
+def todays_wordle(chosenDifficulty = 5,difficulty="Beginner"):
   while True:
     play_today = input("Play today's Wordle? (Yes/No/End): ").capitalize()
     if play_today == "End":
@@ -282,7 +282,7 @@ def todays_wordle(chosenDifficulty = 5):
       #return GordleDictionary.dictionary[0][todays_wordle],play_today
       return GordleDictionary.dictionary[todays_wordle],play_today
     elif play_today == 'No':
-      print("\033[0A\033[KPlaying random Wordle")
+      print(f"\033[0A\033[KPlaying random {difficulty.lower()} Wordle")
       play_today = "Random"
 
       return set_target(chosenDifficulty),play_today
@@ -291,12 +291,12 @@ def todays_wordle(chosenDifficulty = 5):
 if __name__ == "__main__":
   print("Gordle - Greg wordle")
   #UserID = userID()
-  chosenDifficulty = 5 #gameDifficulty()
+  chosenDifficulty,game_difficulty = 5,"Beginner"#gameDifficulty()
   round = 0
   all_guesses=[] #list object to store all of the users guesses
   results = [] #list object to store the results of the rounds, this helps up when reprinting the game board each time.
   solved = False
-  targetWord, gameMode = todays_wordle(chosenDifficulty) 
+  targetWord, gameMode = todays_wordle(chosenDifficulty,game_difficulty) 
   
   while round < chosenDifficulty + 1:
     keyboard(all_guesses,results,targetWord)
@@ -307,7 +307,7 @@ if __name__ == "__main__":
     all_guesses.append(guess)
 
     if min(results[-1]) ==2: #if all values in the latest result are 2 then that means all have exact matches and the game is over
-      print_result(guess,targetWord,round,all_guesses,results,gameMode)
+      print_result(guess,targetWord,round,all_guesses,results,gameMode,game_difficulty)
       #TODO: print the result as a full board with the rounds printed over top
       if round == 0:
         print('Genious!')
@@ -325,7 +325,7 @@ if __name__ == "__main__":
       solved = True
       break
     else:
-      print_result(guess,targetWord,round,all_guesses,results,gameMode)
+      print_result(guess,targetWord,round,all_guesses,results,gameMode,game_difficulty)
     round += 1
 
   if not solved:
