@@ -9,23 +9,21 @@ Rules of the base game:
 
     Green = Correct letter and location, Yellow = Correct letter wrong location, Grey = Letter not in word
 
-In Gordle the user can choose harder modes which make the Gordle longer. THe number of tries goes up accordingly
-
-Package requirements: PyDictionary
+In Gordle the user can choose harder modes which make the Gordle longer. The number of tries goes up accordingly
 
 TODO: figure out how to print the board and print over it each time.
       - Could fill in the game board dictionary and reprint each time
       - Could not print the whole thing and just print as you go.
-TODO: inset debugging print statements EVERYWHERE and a global variable to turn it on
+#TODO: Proper logging
 """
 
 import random
 import GordleDictionary
 import time
 from datetime import date
-import logging
+#import logging 
 from datetime import date, datetime, timedelta
-#TODO: Proper logging
+
 
 GreySquare = "⬛"
 YellowSquare = "🟨"
@@ -60,12 +58,11 @@ def gameDifficulty():
 
 def userID():
     '''
-    userID Function will check the current user, and open an existing user or make a new uesr
+    userID Function will check the current user, and open an existing user or make a new ueser
     parameter 1: ipAddress - optional
     parameter 2: emailAddress
     '''
     #TODO: 'create user database and streak tracking'
-    #TODO: userID debugging
     pass
 
 def set_target(difficulty = 5):
@@ -94,7 +91,6 @@ def Set_target_dictionary(targetWord):
     
     return target_dictionary
 
-#ask the user to guess a 5 letter word
 def user_guess(difficulty = 5):
     '''
     Prompts the user for their guess and ensures that it meets the difficulty criteria
@@ -103,11 +99,15 @@ def user_guess(difficulty = 5):
     '''
     while True:
         guess = input("Guess a " + str(difficulty) + " letter word: ").lower()
+        if guess == 'end':
+          exit()
         if len(guess) != difficulty:
+            print("\033[1A\033[K\033[1A")
             print('Invalid length',end="\r")
             time.sleep(1)
             continue
         if not GordleDictionary.word_in_list(guess,GordleDictionary.allowed_word_list()):
+            print("\033[1A\033[K\033[1A")
             print('Not in word list',end='\r')
             time.sleep(1)
             continue
@@ -119,7 +119,7 @@ def user_guess(difficulty = 5):
 
 def set_guess_dictionary(guess):
     '''
-    sets up the guess dictionary to relay the reults back to the user
+    sets up the guess dictionary to relay the results back to the user
     returns: a set up guess dictionary letter : color
     '''
 
@@ -130,22 +130,6 @@ def set_guess_dictionary(guess):
       guess_dictionary[i]['COLOR'] = EmptySquare
       i += 1
     return guess_dictionary
-
-
-def correct_word(guess,targetWord):
-    '''
-    Is the guess the target word?
-    Return True if valid or False if invalid
-    ''' 
-    if guess == targetWord:
-        return True
-    else:
-        return False
-
-
-#define letter-lookup function
-#then going letter by letter, if letter is in target_dictionary then if the position matches return GreenSquare, else return YellowSquare. If not return EmptySquare
-
 
 def word_to_array(word):
   list = []
@@ -174,8 +158,7 @@ def length_list(word):
 def answer_check(guess,target):
   '''
   Input: the guess and answer
-  Returns: list of 0s, 1s, and 2s based on the accuracy of the guess
-          [2,1,0,0,0]
+  Returns: list of 0s, 1s, and 2s based on the accuracy of the guess ex. [2,1,0,0,0]
   '''
   guess_list = word_to_array(guess)
   target_list = word_to_array(target)
@@ -203,19 +186,6 @@ def answer_check(guess,target):
             full_pattern_matrix[2][j]  = 1 #mark the result_target at the corresponding position as matched
   return full_pattern_matrix[1]
 
-def gameBoard(difficulty = 5):
-  '''
-  Sets up the game board for the player
-  returns a blank board
-  '''
-
-  theBoard = {}
-  for row in range(difficulty + 2):
-    theBoard[row] = {0:''}
-    for column in range(difficulty):
-      theBoard[row][column]= EmptySquare
-  return theBoard
-
 def guess_result_to_color_string(result_list):
   '''
   Parameters: a list of the guess results
@@ -223,24 +193,41 @@ def guess_result_to_color_string(result_list):
   Adapted from code from 3b1b
   '''
   d = {0: "⬛", 1: "🟨", 2: "🟩"}
-  #return d[result_list]
-  return "".join(d[x] for x in result_list)
+  
+  return "".join(d[x] for x in result_list)+'         '
 
-##############################################
-#3b1b's
+
 def all_results_to_color_string(results):
+  '''
+  Parameter: list of number representing the guess accuracy
+  Returns a string of colored squares
+  Copied from 3b1b
+  '''
   return "\n".join(map(guess_result_to_color_string, results))
 
 
-def print_result(guess,targetWord,round):
-  #print("\033[K")
-  print(f'Round {round+1}: ',end='')
-  print(guess_result_to_color_string(answer_check(guess,targetWord)))
-  string = ''
+def print_result(guess,answer,round,guesses,results,gameMode):
+  seperated_guess_string = '' #we seperate each letter so that they align with the result sqaures
   for letter in guess:
-    string += letter + ' '
-
-  print(f"         {string}") 
+    seperated_guess_string += letter + ' '
+  
+  statement = "\n".join([
+    "Gordle - Greg Wordle",
+    f"Game mode: {gameMode}",
+    "",
+    *all_results_to_color_string(results[:]).split("\n"),
+    *" " * (6 - len(results)),
+    *" " * 2,
+    f"Round {round+1}: {guess_result_to_color_string(answer_check(guess,answer))}",
+    f"         {seperated_guess_string}",
+    f"Your guesses: {guesses}",
+  ])
+  
+  # Move cursor back up to the top
+  n = len(statement.split("\n")) + 3
+  print(("\033[F\033[K") * (n))
+            
+  print(statement)
 
 def keyboard(guesses,results,answer):
   used_letters = set("".join(all_guesses))
@@ -266,7 +253,7 @@ def keyboard(guesses,results,answer):
       first_row = '  '.join((first_row,chr(letter)))
     else:
       first_row = ' '.join((first_row,'⬛'))
-  print(first_row)
+
   #second row to indicate matches and missmatches
   for letter in range(97, 123):
     if chr(letter) in matched_letters_set:
@@ -275,7 +262,7 @@ def keyboard(guesses,results,answer):
       second_row = ' '.join((second_row,'🟨'))
     else:
       second_row = ' '.join((second_row,'⬛'))
-  print(second_row)
+  print(f'\n{first_row}\n{second_row}')
 
 def todays_wordle(chosenDifficulty = 5):
   while True:
@@ -283,6 +270,7 @@ def todays_wordle(chosenDifficulty = 5):
     if play_today == "End":
       exit()
     elif play_today == 'Yes':
+      print("\033[0A\033[KPlaying today's Wordle")
       start_date = date(2022,3,1)
       todays_wordle = 255
 
@@ -290,30 +278,36 @@ def todays_wordle(chosenDifficulty = 5):
         diff = timedelta()
         diff = date.today() - start_date
         todays_wordle += diff.days
-      return GordleDictionary.dictionary[0][todays_wordle]
+      play_today = "Wordle"
+      #return GordleDictionary.dictionary[0][todays_wordle],play_today
+      return GordleDictionary.dictionary[todays_wordle],play_today
     elif play_today == 'No':
-      return set_target(chosenDifficulty)
+      print("\033[0A\033[KPlaying random Wordle")
+      play_today = "Random"
+
+      return set_target(chosenDifficulty),play_today
 
 
 if __name__ == "__main__":
   print("Gordle - Greg wordle")
-  UserID = userID()
+  #UserID = userID()
   chosenDifficulty = 5 #gameDifficulty()
   round = 0
-  all_guesses=[] #list object to store all of the users guesses, we print this next to the colored results when reprinting the game board
+  all_guesses=[] #list object to store all of the users guesses
   results = [] #list object to store the results of the rounds, this helps up when reprinting the game board each time.
   solved = False
-  targetWord = todays_wordle(chosenDifficulty) 
+  targetWord, gameMode = todays_wordle(chosenDifficulty) 
   
   while round < chosenDifficulty + 1:
     keyboard(all_guesses,results,targetWord)
     guess = user_guess(chosenDifficulty)
-    #TODO: store all guesses
+    print("\r\033[1A\033[K\r\033[1A\033[K\r\033[1A\033[K\r\033[1A\033[K")
+    
     results.append(answer_check(guess,targetWord))
     all_guesses.append(guess)
 
-    if min(results[-1]) ==2: #if all results are 2 then that means all have exact matches
-      print_result(guess,targetWord,round)
+    if min(results[-1]) ==2: #if all values in the latest result are 2 then that means all have exact matches and the game is over
+      print_result(guess,targetWord,round,all_guesses,results,gameMode)
       #TODO: print the result as a full board with the rounds printed over top
       if round == 0:
         print('Genious!')
@@ -324,18 +318,18 @@ if __name__ == "__main__":
       elif round == 3:
         print('Great!')
       elif round == 4:
-        print('You got it!!')
+        print('You got it!')
       elif round == 5:
         print('Phew!')
       
       solved = True
       break
     else:
-      print_result(guess,targetWord,round)
+      print_result(guess,targetWord,round,all_guesses,results,gameMode)
     round += 1
 
   if not solved:
-    print("Answer was:",targetWord)
+    print(f"The answer was {targetWord}")
 
 
 
