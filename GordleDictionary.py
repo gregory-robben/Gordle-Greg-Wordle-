@@ -2317,6 +2317,7 @@ dictionary=['cigar',
     'rural',
     'shave'
   ]
+'''
 Oa = ['aahed',
     'aalii',
     'aargh',
@@ -12956,8 +12957,8 @@ Oa = ['aahed',
     'zymes',
     'zymic'
   ]
-
-def allowed_word_list():
+'''
+def old_allowed_word_list(difficulty):
   '''
   Reads from the allowed_word list
   returns a list of allowed words
@@ -12966,7 +12967,7 @@ def allowed_word_list():
   try: 
     with open('allowed_words.txt') as f:
       for line in f:
-          allowed_words.append(line.rstrip("\n"))
+        allowed_words.append(line.rstrip("\n"))
     return allowed_words
   except:
     for word in dictionary:
@@ -12998,3 +12999,51 @@ def build_dictionary(myList = [], *args):
     date += 1
     number += 1
   return game_dictionary
+
+from operator import contains
+import random
+def set_target(difficulty = 5):
+    '''
+    set_target chooses a word of specified dificulty length from GordleDictionary.py at random
+    Parameter: difficulty (default is 5)
+    Returns: targetWord
+    '''
+    GameDictionary = allowed_word_list(difficulty)
+    targetWord = GameDictionary[random.randint(0,len(GameDictionary))]
+    return targetWord
+
+
+
+def allowed_word_list(difficulty):
+  '''
+  Reads from the allowed_word list
+  returns a list of allowed words
+  '''
+  allowed_words = []
+  try: 
+    with open('Oxford English Dictionary.txt') as f:
+      for line in f:
+        part_line = line.partition(" ")
+        part1 = repr(part_line[0]).replace("'","").strip('1234567890')
+        
+        re_part_line = part_line[2].partition(" ")
+        
+        part5_list = repr(re_part_line[2]).split(" ")
+        part5 = part5_list[0].strip(" ").replace("'","")
+        #print(f'Part 1: {part1} Part 2: {part2} Part 3: {part3} Part 4: {part4} Part 5: {part5}')
+        approved_parts_of_speach = ['n.','adv.','v.','adj.']
+        if len(part1) == difficulty:
+          if part5 in approved_parts_of_speach and part1.isalpha() and part1.isascii():
+            allowed_words.append(part1.lower())
+            #print(part1)
+    allowed_words = list(set(allowed_words+dictionary))
+    return sorted(allowed_words)
+  except:
+    for word in dictionary:
+      allowed_words.append(word)
+    return allowed_words
+if __name__ == "__main__":
+  GameDictionary = allowed_word_list(5)
+  targetWord = GameDictionary[random.randint(0,len(GameDictionary))]
+  print(GameDictionary)
+  print(targetWord)

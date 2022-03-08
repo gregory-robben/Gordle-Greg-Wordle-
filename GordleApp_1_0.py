@@ -71,7 +71,7 @@ def set_target(difficulty = 5):
     Parameter: difficulty (default is 5)
     Returns: targetWord
     '''
-    GameDictionary = GordleDictionary.allowed_word_list()
+    GameDictionary = GordleDictionary.allowed_word_list(difficulty)
     targetWord = GameDictionary[random.randint(0,len(GameDictionary))]
     return targetWord
 
@@ -106,7 +106,7 @@ def user_guess(difficulty = 5):
             print('Invalid length',end="\r")
             time.sleep(1)
             continue
-        if not GordleDictionary.word_in_list(guess,GordleDictionary.allowed_word_list()):
+        if not GordleDictionary.word_in_list(guess,GordleDictionary.allowed_word_list(difficulty)):
             print("\033[1A\033[K\033[1A")
             print('Not in word list',end='\r')
             time.sleep(1)
@@ -284,9 +284,7 @@ def todays_wordle(chosenDifficulty = 5,difficulty="Beginner"):
     elif play_today == 'No':
       print(f"\033[0A\033[KPlaying random {difficulty.lower()} Wordle")
       play_today = "Random"
-
       return set_target(chosenDifficulty),play_today
-
 
 if __name__ == "__main__":
   print("Gordle - Greg wordle")
