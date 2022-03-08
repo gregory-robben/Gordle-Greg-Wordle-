@@ -58,7 +58,7 @@ def gameDifficulty():
 
 def userID():
     '''
-    userID Function will check the current user, and open an existing user or make a new uesr
+    userID Function will check the current user, and open an existing user or make a new ueser
     parameter 1: ipAddress - optional
     parameter 2: emailAddress
     '''
@@ -119,7 +119,7 @@ def user_guess(difficulty = 5):
 
 def set_guess_dictionary(guess):
     '''
-    sets up the guess dictionary to relay the reults back to the user
+    sets up the guess dictionary to relay the results back to the user
     returns: a set up guess dictionary letter : color
     '''
 
