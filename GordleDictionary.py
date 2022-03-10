@@ -13048,9 +13048,9 @@ def allowed_word_list(difficulty):
 
 if __name__ == "__main__":
   
-  for length in range(16):
-    GameDictionary = allowed_word_list(length)
+  #for length in range(16):
+    GameDictionary = allowed_word_list(11)
     #targetWord = GameDictionary[random.randint(0,len(GameDictionary))]
-    print(f"Length {length:02d}: {len(GameDictionary):05d}")
-    #print(GameDictionary[:99])
+    #print(f"Length {length:02d}: {len(GameDictionary):05d}")
+    print(GameDictionary[:99])
     #print(targetWord)

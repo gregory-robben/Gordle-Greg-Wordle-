@@ -33,7 +33,7 @@ EmptySquare = "⬜"
 
 
 def gameDifficulty():
-  print("Choose your desired difficulty: Beginner (5 letters) | Intermediate (9 letters | Expert (13 letters)")
+  print("Choose your desired difficulty: Beginner (5 letters) | Intermediate (7 letters | Expert (11 letters)")
   valid = False
   while valid != True:
     choice = input().capitalize()
@@ -100,7 +100,13 @@ def user_guess(difficulty = 5):
     while True:
         guess = input("Guess a " + str(difficulty) + " letter word: ").lower()
         if guess == 'end':
+          print(targetWord)
           exit()
+        #if guess == 'hint':
+        #  print("\033[1A\033[K\033[1A")
+        #  print('Invalid length',end="\r")
+        #  time.sleep(10)
+        #  continue
         if len(guess) != difficulty:
             print("\033[1A\033[K\033[1A")
             print('Invalid length',end="\r")
