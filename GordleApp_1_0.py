@@ -44,12 +44,12 @@ def gameDifficulty():
       
     elif choice == 'Intermediate':
       valid = True
-      return 9,choice
+      return 7,choice
       
     elif choice == 'Expert':
       valid = True
      
-      return 13,choice
+      return 11,choice
       
     if choice == 'End':
       valid = True
@@ -264,7 +264,7 @@ def keyboard(guesses,results,answer):
       second_row = ' '.join((second_row,'⬛'))
   print(f'\n{first_row}\n{second_row}')
 
-def todays_wordle(chosenDifficulty = 5,difficulty="Beginner"):
+def todays_wordle():
   while True:
     play_today = input("Play today's Wordle? (Yes/No/End): ").capitalize()
     if play_today == "End":
@@ -279,23 +279,26 @@ def todays_wordle(chosenDifficulty = 5,difficulty="Beginner"):
         diff = date.today() - start_date
         todays_wordle += diff.days
       play_today = "Wordle"
-      #return GordleDictionary.dictionary[0][todays_wordle],play_today
-      return GordleDictionary.dictionary[todays_wordle],play_today
+      chosenDifficulty = 5
+      difficulty =  "Beginner"
+      target = GordleDictionary.dictionary[todays_wordle] 
+      
     elif play_today == 'No':
+      chosenDifficulty,difficulty = gameDifficulty()
       print(f"\033[0A\033[KPlaying random {difficulty.lower()} Wordle")
       play_today = "Random"
-      return set_target(chosenDifficulty),play_today
-
+      target = set_target(chosenDifficulty)
+      
+    return target, play_today, chosenDifficulty, difficulty
 if __name__ == "__main__":
   print("Gordle - Greg wordle")
   #UserID = userID()
-  chosenDifficulty,game_difficulty = 5,"Beginner"#gameDifficulty()
   round = 0
   all_guesses=[] #list object to store all of the users guesses
   results = [] #list object to store the results of the rounds, this helps up when reprinting the game board each time.
   solved = False
-  targetWord, gameMode = todays_wordle(chosenDifficulty,game_difficulty) 
-  
+  targetWord, gameMode, chosenDifficulty, difficulty = todays_wordle() 
+    
   while round < chosenDifficulty + 1:
     keyboard(all_guesses,results,targetWord)
     guess = user_guess(chosenDifficulty)
@@ -305,7 +308,7 @@ if __name__ == "__main__":
     all_guesses.append(guess)
 
     if min(results[-1]) ==2: #if all values in the latest result are 2 then that means all have exact matches and the game is over
-      print_result(guess,targetWord,round,all_guesses,results,gameMode,game_difficulty)
+      print_result(guess,targetWord,round,all_guesses,results,gameMode,difficulty)
       #TODO: print the result as a full board with the rounds printed over top
       if round == 0:
         print('Genious!')
@@ -323,7 +326,7 @@ if __name__ == "__main__":
       solved = True
       break
     else:
-      print_result(guess,targetWord,round,all_guesses,results,gameMode,game_difficulty)
+      print_result(guess,targetWord,round,all_guesses,results,gameMode,difficulty)
     round += 1
 
   if not solved:
