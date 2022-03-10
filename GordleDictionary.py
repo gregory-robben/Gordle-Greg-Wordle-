@@ -13019,10 +13019,12 @@ def allowed_word_list(difficulty):
   returns a list of allowed words
   '''
   allowed_words = []
+  pos = 0
   try: 
-    with open('Oxford English Dictionary.txt') as f:
+    with open('Oxford English Dictionary.txt', encoding="utf8") as f:
       for line in f:
         #TODO test without the repr since we are no longer printing. This could save us from replacing all of the ' as well
+        pos += 1
         part_line = line.partition(" ")
         part1 = repr(part_line[0]).replace("'","").strip('1234567890') #in the OED if a word has multiple meanings its written as Word1, Word2, etc...
         re_part_line = part_line[2].partition(" ")
@@ -13034,19 +13036,21 @@ def allowed_word_list(difficulty):
           if part5 in approved_parts_of_speach and part1.isalpha() and part1.isascii():
             allowed_words.append(part1.lower())
             #print(part1)
-        if difficulty == 5: #only if the difficulty matches traditional Wordle do we combine the traditional Wordle list with the OED.
-            allowed_words = list(set(allowed_words+dictionary+Oa))
+    if difficulty == 5: #only if the difficulty matches traditional Wordle do we combine the traditional Wordle list with the OED.
+      allowed_words = sorted(list(set(allowed_words+dictionary+Oa)))
          
-    return sorted(allowed_words)
+    return sorted(set(allowed_words))
   except:
-    allowed_words = list(set(dictionary + Oa))
+    allowed_words = sorted(list(set(dictionary + Oa)))
     #for word in dictionary:
-      allowed_words.append(word)
+      #allowed_words.append(word)
+    return set(allowed_words)
 
-        
-    return allowed_words
 if __name__ == "__main__":
-  GameDictionary = allowed_word_list(5)
-  targetWord = GameDictionary[random.randint(0,len(GameDictionary))]
-  print(GameDictionary)
-  print(targetWord)
+  
+  for length in range(16):
+    GameDictionary = allowed_word_list(length)
+    #targetWord = GameDictionary[random.randint(0,len(GameDictionary))]
+    print(f"Length {length:02d}: {len(GameDictionary):05d}")
+    #print(GameDictionary[:99])
+    #print(targetWord)
