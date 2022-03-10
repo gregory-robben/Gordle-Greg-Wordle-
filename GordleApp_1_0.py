@@ -33,7 +33,7 @@ EmptySquare = "⬜"
 
 
 def gameDifficulty():
-  print("Choose your desired difficulty: Beginner (5 letters) | Intermediate (7 letters | Expert (11 letters)")
+  print("Choose your desired difficulty: Beginner (5 letters) | Intermediate (7 letters) | Expert (11 letters)")
   valid = False
   while valid != True:
     choice = input().capitalize()
